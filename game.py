@@ -77,7 +77,7 @@ class Game:
         """
         plane_coords = []
         plane_coords = self.game_board.coords(self.plane)
-        if(plane_coords[1] > 460 and self.movement == 10):
+        if(plane_coords[1] > 589 and self.movement == 10):
             self.movement = 0
         if(plane_coords[1] < 40 and self.movement == -10):
             self.movement = 0
@@ -93,9 +93,9 @@ class Game:
     def create_coins(self):
         """Spawn, move coins and check collision with plane"""
         #Create coins randomly
-        spawn_coin = randint(0, 25)
+        spawn_coin = randint(0, 50)
         if(spawn_coin == 1):
-            self.coin_pos = randint(35, 465)
+            self.coin_pos = randint(35, 686)
             self.cn = self.game_board.create_image(845, self.coin_pos, image = self.coinimg)
             self.coins.append(self.cn)
         #get player plane coordinates    
@@ -126,10 +126,10 @@ class Game:
         plane_coords = self.game_board.coords(self.plane)
         
         #Spawns enemy planes, if you hit them you lose points
-        spawn_enemy = randint(0, 50)
+        spawn_enemy = randint(0, 20)
         if(spawn_enemy == 1):          
             #Spawn enemy plane randomly
-            enemy_pos = randint(45, 455)
+            enemy_pos = randint(45, 676)
             self.enemy = self.game_board.create_image(840, enemy_pos, image=self.enemyimg)
             self.enemies.append(self.enemy)
 
