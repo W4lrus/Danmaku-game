@@ -61,13 +61,8 @@ class Game:
         self.planeimg = PhotoImage(file="plane.gif")   #plane
         self.coinimg = PhotoImage(file="gamecoin.gif")
         self.plane = self.game_board.create_image(100, 220, image=self.planeimg)
-        #TODO: Download img
-        #self.enemyimg = PhotoImage(file="enemy.gif")
+        self.enemyimg = PhotoImage(file="enemyplane.gif")
         
-        """
-        self.coin_pos = randint(35, 465)
-        self.coin = self.game_board.create_image(675, self.coin_pos, image = self.coinimg)
-        """
         self.coins = []
         self.enemies = []
         self.points = 0
@@ -84,7 +79,6 @@ class Game:
         """
         check position, plane must stay in canvas (700 px * 500 px), on screen
         plane size 130 px * 71 px
-        TODO: create rectangle - hitbox for plane 
         """
         plane_coords = []
         plane_coords = self.game_board.coords(self.plane)
@@ -93,20 +87,10 @@ class Game:
         if(plane_coords[1] < 40 and self.movement == -10):
             self.movement = 0
         
-        #Spawn coins randomly, 35 px * 35 px
-        
-        """
-        spawn_coin = randint(0, 25)
-               #Move coins
-        for x in self.coins:
-            self.game_board.move(self.coin, -20, 0)
-        
-        self.coins.append(self.coin)
-        self.game_board.move(self.coins[0], -10, 0)
-        """
+        #Spawn coins randomly
         self.create_coins()
         #Spawn enemies
-        #self.create_enemies()
+        self.create_enemies()
 
         self.game_board.move(self.plane, 0, self.movement)
         self.root.after(25, self.Update_game)
@@ -119,14 +103,12 @@ class Game:
             self.coin_pos = randint(35, 465)
             self.cn = self.game_board.create_image(675, self.coin_pos, image = self.coinimg)
             self.coins.append(self.cn)
-        #move all coins
-
+        #get player plane coordinates    
         plane_coords = []
         plane_coords = self.game_board.coords(self.plane)
 
-
+        #move all coins
         for x in self.coins:
-            #self.game_board.move(x, -8, 0)
             coin_coords = []
             coin_coords = self.game_board.coords(x)
             coin_coords[0] -= 8
@@ -138,29 +120,22 @@ class Game:
             if(coin_coords[0] < 150 and coin_coords[0] > 80):
                 if(coin_coords[1] > plane_coords[1]-40 and coin_coords[1] < plane_coords[1]+40):
                     #Delete coin and add points
-                    """
-                    self.coins.remove(x)
-                    x.destroy()
-                    """
-                    #one coin = 18 points 
                     self.points += 1
                     self.label_points.config(text=str(self.points))
-                    print("Collision")
                     self.game_board.delete(x)
                     self.coins.remove(x)
-                
-    """       
+                  
     def create_enemies(self):
+        #get player plane coordinates
+        plane_coords = []
+        plane_coords = self.game_board.coords(self.plane)
+        
         #Spawns enemy planes, if you hit them you lose points
         spawn_enemy = randint(0, 50)
-        if(spawn_enemy == 1):
-            #Spawn enemy plane
-            
-            plane_coords = []
-            plane_coords = self.game_board.coords(self.plane)
-
+        if(spawn_enemy == 1):          
+            #Spawn enemy plane randomly
             enemy_pos = randint(45, 455)
-            self.enemy = self.game_board.create_image(650, enemy_pos, image="self.enemyimg")
+            self.enemy = self.game_board.create_image(650, enemy_pos, image=self.enemyimg)
             self.enemies.append(self.enemy)
 
         #move enemy planes 
@@ -172,19 +147,14 @@ class Game:
             enemy_coords = self.game_board.coords(b)
 
             #check collision
-            if(enemy_coords[0] < 150 and coin_coords[0] > 80):
-                if(coin_coords[1] > plane_coords[1]-40 and coin_coords[1] < plane_coords[1]+40):
+            if(enemy_coords[0] < 150 and enemy_coords[0] > 80):
+                if(enemy_coords[1] > plane_coords[1]-45 and enemy_coords[1] < plane_coords[1]+45):
                     #Delete enemy plane and lose points
                     self.points -= 1
                     self.label_points.config(text=str(self.points))
                     print("Collision")
                     self.game_board.delete(b)
-                    self.enemies.remove(b)
-
-
-
-
-    """       
+                    self.enemies.remove(b)      
 
         
     """
