@@ -88,15 +88,15 @@ class Game:
         self.create_enemies()
 
         self.game_board.move(self.plane, 0, self.movement)
-        self.root.after(25, self.Update_game)
+        self.root.after(10, self.Update_game)
 
     def create_coins(self):
         """Spawn, move coins and check collision with plane"""
         #Create coins randomly
-        spawn_coin = randint(0, 50)
+        spawn_coin = randint(0, 100)
         if(spawn_coin == 1):
-            self.coin_pos = randint(35, 686)
-            self.cn = self.game_board.create_image(845, self.coin_pos, image = self.coinimg)
+            self.coin_pos = randint(35, 620)
+            self.cn = self.game_board.create_image(900, self.coin_pos, image = self.coinimg)
             self.coins.append(self.cn)
         #get player plane coordinates    
         plane_coords = []
@@ -129,8 +129,8 @@ class Game:
         spawn_enemy = randint(0, 20)
         if(spawn_enemy == 1):          
             #Spawn enemy plane randomly
-            enemy_pos = randint(45, 676)
-            self.enemy = self.game_board.create_image(840, enemy_pos, image=self.enemyimg)
+            enemy_pos = randint(45, 610)
+            self.enemy = self.game_board.create_image(900, enemy_pos, image=self.enemyimg)
             self.enemies.append(self.enemy)
 
         #move enemy planes 
@@ -166,9 +166,9 @@ class Game:
 
     def key_pressed(self, event):
         if(event.keysym == "Up"):
-            self.movement = -10
+            self.movement = -5
         elif(event.keysym == "Down"):
-            self.movement = 10
+            self.movement = 5
 
     def key_released(self, event):
         self.movement = 0
