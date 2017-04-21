@@ -34,6 +34,11 @@ class Game:
         self.quit = ttk.Button(self.frame, text="QUIT",
                             style="Red.TButton", command=self.root.destroy)
         self.quit.pack(side="bottom")
+        
+        #Points label
+         
+        self.label_points = Label(self.frame, text="0")
+        self.label_points.pack(side="bottom")
 
         #Game board
         self.game_board = Canvas(self.frame, width=700, height=500)
@@ -56,10 +61,17 @@ class Game:
         self.planeimg = PhotoImage(file="plane.gif")   #plane
         self.coinimg = PhotoImage(file="gamecoin.gif")
         self.plane = self.game_board.create_image(100, 220, image=self.planeimg)
-
+        #TODO: Download img
+        #self.enemyimg = PhotoImage(file="enemy.gif")
+        
+        """
         self.coin_pos = randint(35, 465)
         self.coin = self.game_board.create_image(675, self.coin_pos, image = self.coinimg)
-        
+        """
+        self.coins = []
+        self.enemies = []
+        self.points = 0
+
         #Game keybindings
         self.root.bind_all("<Key>", self.key_pressed)
         self.root.bind_all("<KeyRelease>", self.key_released)
@@ -82,20 +94,99 @@ class Game:
             self.movement = 0
         
         #Spawn coins randomly, 35 px * 35 px
+        
         """
-        self.coins = []
         spawn_coin = randint(0, 25)
-        if(spawn_coin == 1):
-            self.coin_pos = randint(35, 465)
-            self.coins.append(self.game_board.create_image(675, self.coin_pos, image = self.coin))
-        #Move coins
+               #Move coins
         for x in self.coins:
             self.game_board.move(self.coin, -20, 0)
+        
+        self.coins.append(self.coin)
+        self.game_board.move(self.coins[0], -10, 0)
         """
-        self.game_board.move(self.coin, -10, 0)
+        self.create_coins()
+        #Spawn enemies
+        #self.create_enemies()
+
         self.game_board.move(self.plane, 0, self.movement)
         self.root.after(25, self.Update_game)
 
+    def create_coins(self):
+        """Spawn, move coins and check collision with plane"""
+        #Create coins randomly
+        spawn_coin = randint(0, 25)
+        if(spawn_coin == 1):
+            self.coin_pos = randint(35, 465)
+            self.cn = self.game_board.create_image(675, self.coin_pos, image = self.coinimg)
+            self.coins.append(self.cn)
+        #move all coins
+
+        plane_coords = []
+        plane_coords = self.game_board.coords(self.plane)
+
+
+        for x in self.coins:
+            #self.game_board.move(x, -8, 0)
+            coin_coords = []
+            coin_coords = self.game_board.coords(x)
+            coin_coords[0] -= 8
+            self.game_board.coords(x, coin_coords[0], coin_coords[1])
+            coin_coords = self.game_board.coords(x)
+            
+            #check collision, plane(130*71) position on x axis is 80 to 150
+           
+            if(coin_coords[0] < 150 and coin_coords[0] > 80):
+                if(coin_coords[1] > plane_coords[1]-40 and coin_coords[1] < plane_coords[1]+40):
+                    #Delete coin and add points
+                    """
+                    self.coins.remove(x)
+                    x.destroy()
+                    """
+                    #one coin = 18 points 
+                    self.points += 1
+                    self.label_points.config(text=str(self.points))
+                    print("Collision")
+                    self.game_board.delete(x)
+                    self.coins.remove(x)
+                
+    """       
+    def create_enemies(self):
+        #Spawns enemy planes, if you hit them you lose points
+        spawn_enemy = randint(0, 50)
+        if(spawn_enemy == 1):
+            #Spawn enemy plane
+            
+            plane_coords = []
+            plane_coords = self.game_board.coords(self.plane)
+
+            enemy_pos = randint(45, 455)
+            self.enemy = self.game_board.create_image(650, enemy_pos, image="self.enemyimg")
+            self.enemies.append(self.enemy)
+
+        #move enemy planes 
+        for b in self.enemies:
+            enemy_coords = []
+            enemy_coords = self.game_board.coords(b)
+            enemy_coords[0] -= 8
+            self.game_board.coords(b, enemy_coords[0], enemy_coords[1])
+            enemy_coords = self.game_board.coords(b)
+
+            #check collision
+            if(enemy_coords[0] < 150 and coin_coords[0] > 80):
+                if(coin_coords[1] > plane_coords[1]-40 and coin_coords[1] < plane_coords[1]+40):
+                    #Delete enemy plane and lose points
+                    self.points -= 1
+                    self.label_points.config(text=str(self.points))
+                    print("Collision")
+                    self.game_board.delete(b)
+                    self.enemies.remove(b)
+
+
+
+
+    """       
+
+        
     """
     All the app events
     """
