@@ -41,18 +41,13 @@ class Game:
         self.label_points.pack(side="bottom")
 
         #Game board
-        self.game_board = Canvas(self.frame, width=700, height=500)
+        self.game_board = Canvas(self.frame, width=870, height=621)
 
         #Images
         self.background = PhotoImage(file="skybiggergif.gif")    #background
         #place them on canvas
-        self.game_board.create_image(300, 200, image=self.background)
-        
-        #Mark the canvas
-        self.game_board.create_line(0, 2, 700, 2, fill="red")
-        self.game_board.create_line(700, 2, 700, 500, fill="red")
-        self.game_board.create_line(700, 500, 2, 500, fill="red")
-        self.game_board.create_line(2, 500, 2, 2, fill="red")
+        self.game_board.create_image(435, 310, image=self.background)
+
         self.game_board.pack(side="bottom")
 
     def Start_game(self):
@@ -77,7 +72,7 @@ class Game:
     def Update_game(self):
         #TODO: Update positions, check collisions etc.
         """
-        check position, plane must stay in canvas (700 px * 500 px), on screen
+        check position, plane must stay in canvas (870 px * 621 px), on screen
         plane size 130 px * 71 px
         """
         plane_coords = []
@@ -101,7 +96,7 @@ class Game:
         spawn_coin = randint(0, 25)
         if(spawn_coin == 1):
             self.coin_pos = randint(35, 465)
-            self.cn = self.game_board.create_image(675, self.coin_pos, image = self.coinimg)
+            self.cn = self.game_board.create_image(845, self.coin_pos, image = self.coinimg)
             self.coins.append(self.cn)
         #get player plane coordinates    
         plane_coords = []
@@ -135,7 +130,7 @@ class Game:
         if(spawn_enemy == 1):          
             #Spawn enemy plane randomly
             enemy_pos = randint(45, 455)
-            self.enemy = self.game_board.create_image(650, enemy_pos, image=self.enemyimg)
+            self.enemy = self.game_board.create_image(840, enemy_pos, image=self.enemyimg)
             self.enemies.append(self.enemy)
 
         #move enemy planes 
@@ -151,11 +146,19 @@ class Game:
                 if(enemy_coords[1] > plane_coords[1]-45 and enemy_coords[1] < plane_coords[1]+45):
                     #Delete enemy plane and lose points
                     self.points -= 1
+                    #You lose if you get hit too much
+                    if(self.points < 0):
+                        print("Game over!")
+                        self.game_over()
                     self.label_points.config(text=str(self.points))
-                    print("Collision")
+                    print("Collision!")
                     self.game_board.delete(b)
-                    self.enemies.remove(b)      
-
+                    self.enemies.remove(b)
+                    
+    def game_over(self):
+        self.game_board.delete("all")
+        self.game_board.create_image(435, 310, image=self.background)
+        self.root.mainloop()
         
     """
     All the app events
