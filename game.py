@@ -1,9 +1,12 @@
 from tkinter import *
 from tkinter import ttk
 from random import *
+import winsound
+import threading
 
 """
 TODO: grid instead of pack()
+add sound support for other platforms
 """
 
 
@@ -37,7 +40,7 @@ class Game:
         
         #Points label
          
-        self.label_points = Label(self.frame, text="0")
+        self.label_points = Label(self.frame, text="5")
         self.label_points.pack(side="bottom")
 
         #Game board
@@ -60,12 +63,15 @@ class Game:
         
         self.coins = []
         self.enemies = []
-        self.points = 0
+        self.points = 5
 
         #Game keybindings
         self.root.bind_all("<Key>", self.key_pressed)
         self.root.bind_all("<KeyRelease>", self.key_released)
 
+        self.music = threading.Thread(target=self.play_sound)
+        self.music.daemon = True
+        self.music.start()
         self.movement = 0
         self.Update_game()
 
@@ -77,9 +83,10 @@ class Game:
         """
         plane_coords = []
         plane_coords = self.game_board.coords(self.plane)
-        if(plane_coords[1] > 589 and self.movement == 10):
+        print(plane_coords)
+        if(plane_coords[1] > 589 and self.movement > 0):
             self.movement = 0
-        if(plane_coords[1] < 40 and self.movement == -10):
+        if(plane_coords[1] < 35 and self.movement < 0):
             self.movement = 0
         
         #Spawn coins randomly
@@ -145,7 +152,7 @@ class Game:
             if(enemy_coords[0] < 150 and enemy_coords[0] > 80):
                 if(enemy_coords[1] > plane_coords[1]-45 and enemy_coords[1] < plane_coords[1]+45):
                     #Delete enemy plane and lose points
-                    self.points -= 1
+                    self.points -= 5
                     #You lose if you get hit too much
                     if(self.points < 0):
                         print("Game over!")
@@ -158,8 +165,13 @@ class Game:
     def game_over(self):
         self.game_board.delete("all")
         self.game_board.create_image(435, 310, image=self.background)
+        #winsound.PlaySound("WeAreNumberOneBossBattle.wav", winsound.SND_PURGE)
         self.root.mainloop()
-        
+
+    def play_sound(self):
+        #winsound.PlaySound("WeAreNumberOneBossBattle.wav", winsound.SND_FILENAME)
+        #Music doesnt stop
+        pass
     """
     All the app events
     """
